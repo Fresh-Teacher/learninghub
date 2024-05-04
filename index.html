@@ -1453,7 +1453,7 @@ jQuery.extend(jQuery.easing, {
    <div class='hide' id='africavotes-chat'>
     <div class='header-chat'>
         <div class='head-home'>
-            <div class='info-avatar'><img src='https://fresh-teacher.github.io/sure-key/assets/img/team/team-11.jpeg'></div>
+            <div class='info-avatar'><img src='dp.jpeg'></div>
             <p><span class="africavotes-name">Fresh Teacher</span><br> <small>online </small></p>
         </div>
         <div class='get-new hide'>
@@ -1473,13 +1473,32 @@ jQuery.extend(jQuery.easing, {
                     </div>
                 </div>
                 <div class="kAZgZq" style="opacity: 1;">
-                    <div class="iSpIQi"> Hello, how may I help you today? 🙂 </div>
+                    <div class="iSpIQi" id="greeting"> </div>
                 </div>
+                
+                <script>
+                    // Get the current hour of the user's device
+                    var currentHour = new Date().getHours();
+                
+                    // Define the greeting messages based on the current time
+                    var greetingMessage;
+                    if (currentHour >= 5 && currentHour < 12) {
+                        greetingMessage = "Hello, good morning! ☀️";
+                    } else if (currentHour >= 12 && currentHour < 18) {
+                        greetingMessage = "Hello, good afternoon! 🌤️";
+                    } else {
+                        greetingMessage = "Hello, good evening! 🌙";
+                    }
+                
+                    // Set the greeting message in the div
+                    document.getElementById("greeting").innerText = greetingMessage;
+                </script>
+                
             </div>
         </div>
         <div class='blanter-msg'> <textarea id='chat-input' maxlength='120' placeholder='Message'></textarea> <a href='javascript:void(0)' id='send-it'><svg viewbox="0 0 448 448"> <path d="M.213 32L0 181.333 320 224 0 266.667.213 416 448 224z"></path></svg></a>                </div>
     </div>
-    <div id='get-number'></div><a class='close-chat' href='javascript:void(0)'>×</a> </div> <a class='africaVotesChat' href='javascript:void(0)' title='Show Chat'><svg width="20" viewBox="0 0 24 24"><defs/><path fill="#eceff1" d="M20.5 3.4A12.1 12.1 0 0012 0 12 12 0 001.7 17.8L0 24l6.3-1.7c2.8 1.5 5 1.4 5.8 1.5a12 12 0 008.4-20.3z"/><path fill="#4caf50" d="M12 21.8c-3.1 0-5.2-1.6-5.4-1.6l-3.7 1 1-3.7-.3-.4A9.9 9.9 0 012.1 12a10 10 0 0117-7 9.9 9.9 0 01-7 16.9z"/><path fill="#fafafa" d="M17.5 14.3c-.3 0-1.8-.8-2-.9-.7-.2-.5 0-1.7 1.3-.1.2-.3.2-.6.1s-1.3-.5-2.4-1.5a9 9 0 01-1.7-2c-.3-.6.4-.6 1-1.7l-.1-.5-1-2.2c-.2-.6-.4-.5-.6-.5-.6 0-1 0-1.4.3-1.6 1.8-1.2 3.6.2 5.6 2.7 3.5 4.2 4.2 6.8 5 .7.3 1.4.3 1.9.2.6 0 1.7-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4z"/></svg> Let's Chat</a>
+    <div id='get-number'></div><a class='close-chat' href='javascript:void(0)'>×</a> </div> <a class='africaVotesChat' href='javascript:void(0)' title='Show Chat'><svg width="20" viewBox="0 0 24 24"><defs/><path fill="#eceff1" d="M20.5 3.4A12.1 12.1 0 0012 0 12 12 0 001.7 17.8L0 24l6.3-1.7c2.8 1.5 5 1.4 5.8 1.5a12 12 0 008.4-20.3z"/><path fill="#4caf50" d="M12 21.8c-3.1 0-5.2-1.6-5.4-1.6l-3.7 1 1-3.7-.3-.4A9.9 9.9 0 012.1 12a10 10 0 0117-7 9.9 9.9 0 01-7 16.9z"/><path fill="#fafafa" d="M17.5 14.3c-.3 0-1.8-.8-2-.9-.7-.2-.5 0-1.7 1.3-.1.2-.3.2-.6.1s-1.3-.5-2.4-1.5a9 9 0 01-1.7-2c-.3-.6.4-.6 1-1.7l-.1-.5-1-2.2c-.2-.6-.4-.5-.6-.5-.6 0-1 0-1.4.3-1.6 1.8-1.2 3.6.2 5.6 2.7 3.5 4.2 4.2 6.8 5 .7.3 1.4.3 1.9.2.6 0 1.7-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4z"/></svg> Chat</a>
 <script>
     $(document).on("click", "#send-it", function() {
         var a = document.getElementById("chat-input");
