@@ -31,6 +31,22 @@
             background: #fff;
         }
 
+        @keyframes heartbeat {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.heartbeat {
+    animation: heartbeat 1.5s infinite;
+}
+
         .mainContainer {
             background: url(images/.gif);
             max-width: 450px;
