@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Math Quiz for Kids</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Schoolbell&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Schoolbell', cursive;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .question {
+            display: none;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            font-size: 18px;
+            margin-top: 10px; /* Add margin-top to space out the button */
+        }
+        .form-control {
+            margin-bottom: 10px; /* Add margin-bottom to space out the input field */
+        }
+        #scoreModal .modal-dialog {
+            max-width: 400px;
+        }
+        /* CSS animation for gear icons */
+        @keyframes rotateRight {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes rotateLeft {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(-360deg);
+            }
+        }
+        .gear-icon-left {
+            display: inline-block;
+            animation: rotateLeft 2s infinite linear; /* Apply animation to rotate the gear icon to the left */
+        }
+        .gear-icon-right {
+            display: inline-block;
+            animation: rotateRight 2s infinite linear; /* Apply animation to rotate the gear icon to the right */
+        }
+    </style>
+</head>
+<body onload="$('#settingsModal').modal('show')">
+
+<div class="container">
+    <h1>Fun Math Quiz for Kids</h1>
+    
+    <div id="quiz">
+        <!-- Questions will be dynamically inserted here -->
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- Gear icons with different animations -->
+                <h5 class="modal-title" id="settingsModalLabel"><span class="gear-icon-left">⚙️</span> Settings <span class="gear-icon-right">⚙️</span></h5>
+            </div>
+            <div class="modal-body">
+                <p>Please select your sound preference:</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="soundPreference" id="soundOn" value="on" checked>
+                    <label class="form-check-label" for="soundOn">
+                        Sounds On
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="soundPreference" id="soundOff" value="off">
+                    <label class="form-check-label" for="soundOff">
+                        Sounds Off
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveSoundPreference()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Score Modal -->
+<div class="modal fade" id="scoreModal" tabindex="-1" role="dialog" aria-labelledby="scoreModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scoreModalLabel">Your Score</h5>
+            </div>
+            <div class="modal-body">
+                <p id="score"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="repeatQuiz()">Repeat Quiz</button>
+                <a href="index.html" class="btn btn-secondary">Back to Homepage</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Array of questions
+    var questions = [
+        { text: "What is 2 + 2?", answer: 4 },
+        { text: "What is 5 - 3?", answer: 2 },
+        { text: "What is 4 * 6?", answer: 24 },
+        { text: "What is 10 / 2?", answer: 5 },
+        { text: "What is 3 squared?", answer: 9 },
+        { text: "What is 12 - 7?", answer: 5 },
+        { text: "What is 8 * 3?", answer: 24 },
+        { text: "What is 15 / 3?", answer: 5 },
+        { text: "What is 4 squared?", answer: 16 },
+        { text: "What is 9 - 6?", answer: 3 },
+        { text: "What is 7 * 4?", answer: 28 },
+        { text: "What is 18 / 3?", answer: 6 },
+        { text: "What is 5 squared?", answer: 25 },
+        { text: "What is 10 - 4?", answer: 6 },
+        { text: "What is 6 * 5?", answer: 30 },
+        { text: "What is 21 / 3?", answer: 7 },
+        { text: "What is 8 squared?", answer: 64 },
+        { text: "What is 12 - 9?", answer: 3 },
+        { text: "What is 9 * 4?", answer: 36 },
+        { text: "What is 30 / 5?", answer: 6 }
+    ];
+
+    // Variable to store sound preference
+    var soundPreference = '';
+
+    // Function to save sound preference
+    function saveSoundPreference() {
+        var soundOn = document.getElementById('soundOn');
+        soundPreference = soundOn.checked ? soundOn.value : 'off';
+        $('#settingsModal').modal('hide');
+        if (soundPreference === 'on') {
+            playStartSound(); // Play start sound if sound preference is 'on'
+        }
+        initializeQuiz();
+    }
+
+    // Function to play start sound
+    function playStartSound() {
+        var audio = new Audio('start.mp3');
+        audio.play();
+    }
+
+    // Function to select a random subset of questions
+    function selectRandomQuestions(numQuestions) {
+        var shuffledQuestions = questions.sort(() => Math.random() - 0.5); // Shuffle the questions array
+        return shuffledQuestions.slice(0, numQuestions);
+    }
+
+    // Function to initialize the quiz with random questions
+    function initializeQuiz() {
+        if (soundPreference === '') {
+            $('#settingsModal').modal('show');
+            return;
+        }
+        var randomQuestions = selectRandomQuestions(10); // Select 10 random questions
+        var quizElement = document.getElementById('quiz');
+        for (var i = 0; i < randomQuestions.length; i++) {
+            var question = randomQuestions[i];
+            var questionElement = document.createElement('div');
+            questionElement.className = 'question';
+            questionElement.innerHTML = '<h3>Question ' + (i + 1) + ' of ' + randomQuestions.length + ':</h3>' +
+                                         '<p>' + question.text + '</p>' +
+                                         '<input type="number" class="form-control" id="q' + (i + 1) + '">' +
+                                         '<button class="btn btn-primary btn-block" onclick="checkAnswer(' + question.answer + ',' + (i + 1) + ')">Next</button>';
+            quizElement.appendChild(questionElement);
+        }
+        // Show the first question
+        document.querySelector('.question').style.display = 'block';
+    }
+
+    var currentQuestion = 1;
+
+    function checkAnswer(correctAnswer, questionNumber) {
+        var userAnswer = parseInt(document.getElementById('q' + currentQuestion).value.trim());
+        if (isNaN(userAnswer)) {
+            alert("Please provide an answer.");
+            return;
+        }
+        
+        var isCorrect = userAnswer === correctAnswer;
+        if (isCorrect && soundPreference === 'on') {
+            speak("Yes");
+        } else if (!isCorrect && soundPreference === 'on') {
+            speak("No");
+        }
+        
+        document.querySelector('.question:nth-child(' + questionNumber + ')').style.display = 'none'; // Hide the current question
+        currentQuestion++;
+        if (currentQuestion <= 10) {
+            document.querySelector('.question:nth-child(' + currentQuestion + ')').style.display = 'block'; // Show the next question
+        } else {
+            calculateScore(); // Call calculateScore() when all questions are answered
+        }
+    }
+
+    function speak(text) {
+        var utterance = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function calculateScore() {
+        var score = 0;
+        var totalQuestions = 10; // Update total questions to 10
+        for (var i = 1; i <= totalQuestions; i++) {
+            var userAnswer = parseInt(document.getElementById('q' + i).value);
+            if (!isNaN(userAnswer) && userAnswer === questions[i - 1].answer) {
+                score++;
+            }
+        }
+        
+        var audioFile = '';
+        if (score >= 8) {
+            audioFile = 'omugezi.mp3';
+        } else if (score >= 5) {
+            audioFile = 'my lord.mp3';
+        } else if (score >= 3) {
+            audioFile = 'kaweddemu.mp3';
+        } else {
+            audioFile = 'charles.mp3';
+        }
+
+        // Play the appropriate audio if sound preference is on
+        if (soundPreference === 'on') {
+            var audio = new Audio(audioFile);
+            audio.play();
+        }
+        
+        document.getElementById('score').innerText = "You got " + score + " out of 10 correct!"; // Update score text to reflect 10 questions
+        $('#scoreModal').modal('show');
+    }
+
+    function repeatQuiz() {
+        location.reload();
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
